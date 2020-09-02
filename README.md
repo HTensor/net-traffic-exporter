@@ -1,4 +1,4 @@
-# V2Ray Exporter
+# V2Ray/Iptables Exporter
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/wi1dcard/v2ray-exporter)][goreportcard]
 [![Build Status](https://travis-ci.com/wi1dcard/v2ray-exporter.svg?branch=master)][build-status]
