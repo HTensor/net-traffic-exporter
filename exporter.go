@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"os/exec"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -11,7 +13,7 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
-	grpc "google.golang.org/grpc"
+	"google.golang.org/grpc"
 )
 
 type Exporter struct {
@@ -95,6 +97,10 @@ func (e *Exporter) scrapeV2Ray(ch chan<- prometheus.Metric) error {
 
 	client := command.NewStatsServiceClient(conn)
 
+	if err := e.getIptablesMetrics(ch); err != nil {
+		return err
+	}
+
 	if err := e.scrapeV2RaySysMetrics(ctx, ch, client); err != nil {
 		return err
 	}
@@ -151,6 +157,27 @@ func (e *Exporter) scrapeV2RaySysMetrics(ctx context.Context, ch chan<- promethe
 	e.registerConstMetricGauge(ch, "memstats_num_gc", float64(resp.GetNumGC()))
 	e.registerConstMetricGauge(ch, "memstats_pause_total_ns", float64(resp.GetPauseTotalNs()))
 
+	return nil
+}
+
+func (e *Exporter) getIptablesMetrics(ch chan<- prometheus.Metric) error {
+	out, err := exec.Command("iptables", "-t", "nat", "-nxvL", "PREROUTING").Output()
+	if err != nil {
+		return fmt.Errorf("%s", err)
+	}
+	for _,line := range strings.Split(string(out), "\n") {
+		rawData := strings.Fields(line)
+		if len(rawData) <= 0 {
+			continue
+		}
+		if _, err := strconv.Atoi(rawData[0]); err != nil {
+			continue
+		}
+		if n, err := strconv.ParseFloat(rawData[1], 64); err == nil {
+			e.registerConstMetricCounter(ch, "traffic_downlink_bytes_total", n, "user", rawData[10])
+			e.registerConstMetricCounter(ch, "traffic_uplink_bytes_total", n, "user", rawData[10])
+		}
+	}
 	return nil
 }
 
