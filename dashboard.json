@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 3,
-  "iteration": 1599622139593,
+  "iteration": 1599635635675,
   "links": [],
   "panels": [
     {
@@ -359,13 +359,13 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(v2ray_traffic_downlink_bytes_total{job=~\"$job\",instance=~\".+\",dimension=~\"inbound|iptables\"}[5m]))",
+          "expr": "sum(irate(v2ray_traffic_downlink_bytes_total{job=~\"$job\",target=~\"$target\"}[5m]))",
           "interval": "",
           "legendFormat": "Downlink",
           "refId": "A"
         },
         {
-          "expr": "sum(irate(v2ray_traffic_uplink_bytes_total{job=~\"$job\",instance=~\".+\",dimension=~\"inbound|iptables\"}[5m]))",
+          "expr": "sum(irate(v2ray_traffic_uplink_bytes_total{job=~\"$job\",target=~\"$target\"}[5m]))",
           "interval": "",
           "legendFormat": "Uplink",
           "refId": "B"
@@ -375,7 +375,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Total Bandwidth",
+      "title": "$target Bandwidth",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -887,14 +887,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(v2ray_traffic_downlink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"inbound|iptables\"}[5m]))",
+          "expr": "sum(irate(v2ray_traffic_downlink_bytes_total{job=~\"$job\",instance=~\"$instance\"}[5m]))",
           "hide": false,
           "interval": "",
           "legendFormat": "Downlink",
           "refId": "A"
         },
         {
-          "expr": "sum(irate(v2ray_traffic_uplink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"inbound|iptables\"}[5m]))",
+          "expr": "sum(irate(v2ray_traffic_uplink_bytes_total{job=~\"$job\",instance=~\"$instance\"}[5m]))",
           "interval": "",
           "legendFormat": "Uplink",
           "refId": "B"
@@ -904,7 +904,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Total Bandwidth",
+      "title": "All Bandwidth",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -956,8 +956,8 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 9,
-        "w": 24,
+        "h": 7,
+        "w": 12,
         "x": 0,
         "y": 14
       },
@@ -1004,7 +1004,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "$instance inbound status",
+      "title": "$instance inbound download status",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1057,10 +1057,111 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 9,
-        "w": 24,
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 14
+      },
+      "hiddenSeries": false,
+      "id": 89,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "percentage": false,
+      "pluginVersion": "7.1.5",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "scopedVars": {
+        "instance": {
+          "selected": false,
+          "text": "sh.leishi.io:11260",
+          "value": "sh.leishi.io:11260"
+        }
+      },
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "irate(v2ray_traffic_uplink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"inbound\"}[5m])",
+          "interval": "",
+          "legendFormat": "{{target}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "$instance inbound upload status",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": null,
+          "format": "Bps",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
         "x": 0,
-        "y": 23
+        "y": 21
       },
       "hiddenSeries": false,
       "id": 74,
@@ -1105,7 +1206,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "$instance user status",
+      "title": "$instance user download status",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1157,13 +1258,13 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 9,
-        "w": 24,
-        "x": 0,
-        "y": 32
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 21
       },
       "hiddenSeries": false,
-      "id": 81,
+      "id": 90,
       "legend": {
         "avg": false,
         "current": false,
@@ -1195,6 +1296,110 @@
       "steppedLine": false,
       "targets": [
         {
+          "expr": "irate(v2ray_traffic_uplink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"user\"}[5m])",
+          "interval": "",
+          "legendFormat": "{{target}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "$instance user upload status",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "Bps",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 28
+      },
+      "hiddenSeries": false,
+      "id": 81,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "percentage": false,
+      "pluginVersion": "7.1.5",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "scopedVars": {
+        "instance": {
+          "selected": false,
+          "text": "sh.leishi.io:11260",
+          "value": "sh.leishi.io:11260"
+        }
+      },
+      "seriesOverrides": [
+        {
+          "alias": ""
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
           "expr": "irate(v2ray_traffic_downlink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"iptables\"}[5m])",
           "interval": "",
           "legendFormat": "{{target}}",
@@ -1205,7 +1410,111 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "$instance iptables status",
+      "title": "$instance iptables download status",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "Bps",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 28
+      },
+      "hiddenSeries": false,
+      "id": 91,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "percentage": false,
+      "pluginVersion": "7.1.5",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "scopedVars": {
+        "instance": {
+          "selected": false,
+          "text": "sh.leishi.io:11260",
+          "value": "sh.leishi.io:11260"
+        }
+      },
+      "seriesOverrides": [
+        {
+          "alias": ""
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "irate(v2ray_traffic_uplink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"iptables\"}[5m])",
+          "interval": "",
+          "legendFormat": "{{target}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "$instance iptables upload status",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1249,12 +1558,12 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 41
+        "y": 35
       },
-      "id": 82,
+      "id": 92,
       "panels": [],
       "repeat": null,
-      "repeatIteration": 1599622139593,
+      "repeatIteration": 1599635635675,
       "repeatPanelId": 4,
       "scopedVars": {
         "instance": {
@@ -1301,10 +1610,10 @@
         "h": 6,
         "w": 3,
         "x": 0,
-        "y": 42
+        "y": 36
       },
       "hiddenSeries": false,
-      "id": 83,
+      "id": 93,
       "legend": {
         "avg": false,
         "current": false,
@@ -1322,7 +1631,7 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "repeatIteration": 1599622139593,
+      "repeatIteration": 1599635635675,
       "repeatPanelId": 11,
       "repeatedByRow": true,
       "scopedVars": {
@@ -1412,11 +1721,11 @@
         "h": 6,
         "w": 9,
         "x": 3,
-        "y": 42
+        "y": 36
       },
-      "id": 84,
+      "id": 94,
       "pageSize": null,
-      "repeatIteration": 1599622139593,
+      "repeatIteration": 1599635635675,
       "repeatPanelId": 18,
       "repeatedByRow": true,
       "scopedVars": {
@@ -1601,10 +1910,10 @@
         "h": 6,
         "w": 12,
         "x": 12,
-        "y": 42
+        "y": 36
       },
       "hiddenSeries": false,
-      "id": 85,
+      "id": 95,
       "legend": {
         "avg": false,
         "current": false,
@@ -1623,7 +1932,7 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "repeatIteration": 1599622139593,
+      "repeatIteration": 1599635635675,
       "repeatPanelId": 31,
       "repeatedByRow": true,
       "scopedVars": {
@@ -1639,14 +1948,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(v2ray_traffic_downlink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"inbound|iptables\"}[5m]))",
+          "expr": "sum(irate(v2ray_traffic_downlink_bytes_total{job=~\"$job\",instance=~\"$instance\"}[5m]))",
           "hide": false,
           "interval": "",
           "legendFormat": "Downlink",
           "refId": "A"
         },
         {
-          "expr": "sum(irate(v2ray_traffic_uplink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"inbound|iptables\"}[5m]))",
+          "expr": "sum(irate(v2ray_traffic_uplink_bytes_total{job=~\"$job\",instance=~\"$instance\"}[5m]))",
           "interval": "",
           "legendFormat": "Uplink",
           "refId": "B"
@@ -1656,7 +1965,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Total Bandwidth",
+      "title": "All Bandwidth",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1708,13 +2017,13 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 9,
-        "w": 24,
+        "h": 7,
+        "w": 12,
         "x": 0,
-        "y": 48
+        "y": 42
       },
       "hiddenSeries": false,
-      "id": 86,
+      "id": 96,
       "legend": {
         "avg": false,
         "current": false,
@@ -1733,7 +2042,7 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "repeatIteration": 1599622139593,
+      "repeatIteration": 1599635635675,
       "repeatPanelId": 68,
       "repeatedByRow": true,
       "scopedVars": {
@@ -1759,7 +2068,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "$instance inbound status",
+      "title": "$instance inbound download status",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1812,13 +2121,13 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 9,
-        "w": 24,
-        "x": 0,
-        "y": 57
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 42
       },
       "hiddenSeries": false,
-      "id": 87,
+      "id": 97,
       "legend": {
         "avg": false,
         "current": false,
@@ -1837,7 +2146,111 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "repeatIteration": 1599622139593,
+      "repeatIteration": 1599635635675,
+      "repeatPanelId": 89,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "instance": {
+          "selected": false,
+          "text": "xuzhou.leishi.io:10681",
+          "value": "xuzhou.leishi.io:10681"
+        }
+      },
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "irate(v2ray_traffic_uplink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"inbound\"}[5m])",
+          "interval": "",
+          "legendFormat": "{{target}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "$instance inbound upload status",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": null,
+          "format": "Bps",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 49
+      },
+      "hiddenSeries": false,
+      "id": 98,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "percentage": false,
+      "pluginVersion": "7.1.5",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "repeatIteration": 1599635635675,
       "repeatPanelId": 74,
       "repeatedByRow": true,
       "scopedVars": {
@@ -1863,7 +2276,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "$instance user status",
+      "title": "$instance user download status",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1915,13 +2328,13 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 9,
-        "w": 24,
-        "x": 0,
-        "y": 66
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 49
       },
       "hiddenSeries": false,
-      "id": 88,
+      "id": 99,
       "legend": {
         "avg": false,
         "current": false,
@@ -1940,8 +2353,8 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "repeatIteration": 1599622139593,
-      "repeatPanelId": 81,
+      "repeatIteration": 1599635635675,
+      "repeatPanelId": 90,
       "repeatedByRow": true,
       "scopedVars": {
         "instance": {
@@ -1951,6 +2364,113 @@
         }
       },
       "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "irate(v2ray_traffic_uplink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"user\"}[5m])",
+          "interval": "",
+          "legendFormat": "{{target}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "$instance user upload status",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "Bps",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 56
+      },
+      "hiddenSeries": false,
+      "id": 100,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "percentage": false,
+      "pluginVersion": "7.1.5",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "repeatIteration": 1599635635675,
+      "repeatPanelId": 81,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "instance": {
+          "selected": false,
+          "text": "xuzhou.leishi.io:10681",
+          "value": "xuzhou.leishi.io:10681"
+        }
+      },
+      "seriesOverrides": [
+        {
+          "alias": ""
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
@@ -1966,7 +2486,114 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "$instance iptables status",
+      "title": "$instance iptables download status",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "Bps",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 56
+      },
+      "hiddenSeries": false,
+      "id": 101,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "percentage": false,
+      "pluginVersion": "7.1.5",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "repeatIteration": 1599635635675,
+      "repeatPanelId": 91,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "instance": {
+          "selected": false,
+          "text": "xuzhou.leishi.io:10681",
+          "value": "xuzhou.leishi.io:10681"
+        }
+      },
+      "seriesOverrides": [
+        {
+          "alias": ""
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "irate(v2ray_traffic_uplink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"iptables\"}[5m])",
+          "interval": "",
+          "legendFormat": "{{target}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "$instance iptables upload status",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -2071,7 +2698,7 @@
         "useTags": false
       },
       {
-        "allValue": null,
+        "allValue": ".*",
         "current": {
           "selected": true,
           "text": [
@@ -2085,93 +2712,11 @@
         "definition": "query_result(count_over_time(v2ray_traffic_downlink_bytes_total{job=\"$job\"}[$__range]))",
         "hide": 0,
         "includeAll": true,
-        "label": "Dimension",
+        "label": "Target",
         "multi": true,
-        "name": "dimension",
+        "name": "target",
         "options": [],
         "query": "query_result(count_over_time(v2ray_traffic_downlink_bytes_total{job=\"$job\"}[$__range]))",
-        "refresh": 2,
-        "regex": "/dimension=\"(.*?)\"/",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
-      },
-      {
-        "allValue": ".*",
-        "current": {
-          "selected": true,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
-        "datasource": "Prometheus",
-        "definition": "query_result(count_over_time(v2ray_traffic_downlink_bytes_total{job=\"$job\",dimension=\"inbound\"}[$__range]))",
-        "hide": 0,
-        "includeAll": true,
-        "label": "Inbound Target",
-        "multi": true,
-        "name": "inbound_target",
-        "options": [],
-        "query": "query_result(count_over_time(v2ray_traffic_downlink_bytes_total{job=\"$job\",dimension=\"inbound\"}[$__range]))",
-        "refresh": 2,
-        "regex": "/target=\"(.*?)\"/",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
-      },
-      {
-        "allValue": ".*",
-        "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
-        },
-        "datasource": "Prometheus",
-        "definition": "query_result(count_over_time(v2ray_traffic_downlink_bytes_total{job=\"$job\",dimension=\"user\"}[$__range]))",
-        "hide": 0,
-        "includeAll": true,
-        "label": "User Target",
-        "multi": true,
-        "name": "user_target",
-        "options": [],
-        "query": "query_result(count_over_time(v2ray_traffic_downlink_bytes_total{job=\"$job\",dimension=\"user\"}[$__range]))",
-        "refresh": 2,
-        "regex": "/target=\"(.*?)\"/",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
-      },
-      {
-        "allValue": ".*",
-        "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
-        },
-        "datasource": "Prometheus",
-        "definition": "query_result(count_over_time(v2ray_traffic_downlink_bytes_total{job=\"$job\",dimension=\"iptables\"}[$__range]))",
-        "hide": 0,
-        "includeAll": true,
-        "label": "Iptables Target",
-        "multi": true,
-        "name": "iptables_target",
-        "options": [],
-        "query": "query_result(count_over_time(v2ray_traffic_downlink_bytes_total{job=\"$job\",dimension=\"iptables\"}[$__range]))",
         "refresh": 2,
         "regex": "/target=\"(.*?)\"/",
         "skipUrlSync": false,
@@ -2203,6 +2748,6 @@
   },
   "timezone": "",
   "title": "Net Traffic Dashboard",
-  "uid": "CCSvIIEZz",
-  "version": 2
+  "uid": "CCSvIIEZzz",
+  "version": 6
 }
