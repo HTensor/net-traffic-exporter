@@ -64,6 +64,6 @@ func main() {
 		}
 	})
 
-	log.Infof("Server is ready to handle incoming scrape requests.")
+	log.Infof("Server is ready to handle incoming scrape requests on %s", opts.Listen)
 	log.Fatal(http.ListenAndServe(opts.Listen, nil))
 }

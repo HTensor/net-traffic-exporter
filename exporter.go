@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os/exec"
+	"regexp"
 	"strconv"
 	"strings"
 	"sync"
@@ -89,6 +90,11 @@ func (e *Exporter) scrapeV2Ray(ch chan<- prometheus.Metric) error {
 	ctx, cancel := context.WithTimeout(context.Background(), e.scrapeTimeout)
 	defer cancel()
 
+	// Scrape iptables stat
+	if err := e.getIptablesMetrics(ch); err != nil {
+		return err
+	}
+
 	conn, err := grpc.DialContext(ctx, e.endpoint, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		return fmt.Errorf("failed to dial: %w, timeout: %v", err, e.scrapeTimeout)
@@ -96,10 +102,6 @@ func (e *Exporter) scrapeV2Ray(ch chan<- prometheus.Metric) error {
 	defer conn.Close()
 
 	client := command.NewStatsServiceClient(conn)
-
-	if err := e.getIptablesMetrics(ch); err != nil {
-		return err
-	}
 
 	if err := e.scrapeV2RaySysMetrics(ctx, ch, client); err != nil {
 		return err
@@ -161,11 +163,14 @@ func (e *Exporter) scrapeV2RaySysMetrics(ctx context.Context, ch chan<- promethe
 }
 
 func (e *Exporter) getIptablesMetrics(ch chan<- prometheus.Metric) error {
-	out, err := exec.Command("iptables", "-t", "nat", "-nxvL", "PREROUTING").Output()
+	out, err := exec.Command("iptables", "-nxvL", "FORWARD").Output()
+	// out, err := exec.Command("cat", "test").Output()
 	if err != nil {
 		return fmt.Errorf("%s", err)
 	}
-	for _,line := range strings.Split(string(out), "\n") {
+	downloadRe := regexp.MustCompile(`/\* DOWNLOAD (.*) \*/`)
+	uploadRe := regexp.MustCompile(`/\* UPLOAD (.*) \*/`)
+	for _, line := range strings.Split(string(out), "\n") {
 		rawData := strings.Fields(line)
 		if len(rawData) <= 0 {
 			continue
@@ -174,8 +179,12 @@ func (e *Exporter) getIptablesMetrics(ch chan<- prometheus.Metric) error {
 			continue
 		}
 		if n, err := strconv.ParseFloat(rawData[1], 64); err == nil {
-			e.registerConstMetricCounter(ch, "traffic_downlink_bytes_total", n, "user", rawData[10])
-			e.registerConstMetricCounter(ch, "traffic_uplink_bytes_total", n, "user", rawData[10])
+			if downloadMatch := downloadRe.FindStringSubmatch(line); len(downloadMatch) > 1 {
+				e.registerConstMetricCounter(ch, "traffic_downlink_bytes_total", n, "iptables", downloadMatch[1])
+			}
+			if uploadMatch := uploadRe.FindStringSubmatch(line); len(uploadMatch) > 1 {
+				e.registerConstMetricCounter(ch, "traffic_uplink_bytes_total", n, "iptables", uploadMatch[1])
+			}
 		}
 	}
 	return nil
