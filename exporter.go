@@ -90,6 +90,10 @@ func (e *Exporter) scrapeV2Ray(ch chan<- prometheus.Metric) error {
 	ctx, cancel := context.WithTimeout(context.Background(), e.scrapeTimeout)
 	defer cancel()
 
+	// Scrape interfaces stat
+	if err := e.getnetworkInterfacesMetrics(ch); err != nil {
+		return err
+	}
 	// Scrape iptables stat
 	if err := e.getIptablesMetrics(ch); err != nil {
 		return err
@@ -159,6 +163,23 @@ func (e *Exporter) scrapeV2RaySysMetrics(ctx context.Context, ch chan<- promethe
 	e.registerConstMetricGauge(ch, "memstats_num_gc", float64(resp.GetNumGC()))
 	e.registerConstMetricGauge(ch, "memstats_pause_total_ns", float64(resp.GetPauseTotalNs()))
 
+	return nil
+}
+
+func (e *Exporter) getnetworkInterfacesMetrics(ch chan<- prometheus.Metric) error {
+	out, err := exec.Command("ip", "-s", "link").Output()
+	if err != nil {
+		return fmt.Errorf("%s", err)
+	}
+	r := regexp.MustCompile(`\d+: ([a-z0-9]+):.*\n.*\n[ ]+RX:.*\n[ ]+([\d]+).*\n[ ]+TX:.*\n[ ]+([\d]+)`)
+	for _, match := range r.FindAllStringSubmatch(string(out), -1) {
+		if download, err := strconv.ParseFloat(match[2], 64); err == nil {
+			e.registerConstMetricCounter(ch, "traffic_downlink_bytes_total", download, "interfaces", match[1])
+		}
+		if upload, err := strconv.ParseFloat(match[3], 64); err == nil {
+			e.registerConstMetricCounter(ch, "traffic_downlink_bytes_total", upload, "interfaces", match[1])
+		}
+	}
 	return nil
 }
 
