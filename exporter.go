@@ -177,7 +177,7 @@ func (e *Exporter) getnetworkInterfacesMetrics(ch chan<- prometheus.Metric) erro
 			e.registerConstMetricCounter(ch, "traffic_downlink_bytes_total", download, "interfaces", match[1])
 		}
 		if upload, err := strconv.ParseFloat(match[3], 64); err == nil {
-			e.registerConstMetricCounter(ch, "traffic_downlink_bytes_total", upload, "interfaces", match[1])
+			e.registerConstMetricCounter(ch, "traffic_uplink_bytes_total", upload, "interfaces", match[1])
 		}
 	}
 	return nil
