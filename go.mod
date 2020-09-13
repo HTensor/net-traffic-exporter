@@ -1,4 +1,4 @@
-module github.com/leishi1313/v2ray-iptables-exporter
+module github.com/leishi1313/net-traffic-exporter
 
 go 1.15
 
@@ -6,11 +6,11 @@ require (
 	github.com/go-delve/delve v1.5.0 // indirect
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/mitchellh/gox v1.0.1 // indirect
-	github.com/prometheus/client_golang v1.6.0
+	github.com/prometheus/client_golang v1.7.1
 	github.com/sirupsen/logrus v1.6.0
-	golang.org/x/net v0.0.0-20190620200207-3b0461eec859
+	golang.org/x/net v0.0.0-20200904194848-62affa334b73
 	golang.org/x/text v0.3.3 // indirect
-	google.golang.org/grpc v1.29.1
+	google.golang.org/grpc v1.32.0
 	v2ray.com/core v4.19.1+incompatible
 )
 
