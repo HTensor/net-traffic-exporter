@@ -184,7 +184,7 @@ func (e *Exporter) getnetworkInterfacesMetrics(ch chan<- prometheus.Metric) erro
 }
 
 func (e *Exporter) getIptablesMetrics(ch chan<- prometheus.Metric) error {
-	out, err := exec.Command("iptables", "-nxvL", "FORWARD").Output()
+	out, err := exec.Command("iptables", "-nxvL").Output()
 	// out, err := exec.Command("cat", "test").Output()
 	if err != nil {
 		return fmt.Errorf("%s", err)
