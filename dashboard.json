@@ -7,7 +7,9 @@
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
+        "limit": 100,
         "name": "Annotations & Alerts",
+        "showIn": 0,
         "type": "dashboard"
       }
     ]
@@ -16,7 +18,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 3,
-  "iteration": 1599635635675,
+  "iteration": 1600467807135,
   "links": [],
   "panels": [
     {
@@ -102,7 +104,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(v2ray_up{job=~\"$job\",instance=~\"$instance\"} == 1)",
+          "expr": "count(node_v2ray_up{job=~\"$job\",instance=~\"$instance\"} == 1)",
           "instant": false,
           "interval": "",
           "legendFormat": "",
@@ -144,7 +146,7 @@
       "pageSize": null,
       "showHeader": true,
       "sort": {
-        "col": 2,
+        "col": 4,
         "desc": false
       },
       "styles": [
@@ -278,15 +280,16 @@
       ],
       "targets": [
         {
-          "expr": "v2ray_uptime_seconds{job=~\"$job\",instance=~\"$instance\"}",
+          "expr": "node_v2ray_uptime{job=~\"$job\",instance=~\"$instance\"}",
           "format": "table",
           "hide": false,
           "instant": true,
+          "interval": "",
           "legendFormat": "",
           "refId": "A"
         },
         {
-          "expr": "sum by (instance) (increase(v2ray_traffic_downlink_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range]))",
+          "expr": "sum by (instance) (increase(node_network_receive_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range]))",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -295,7 +298,7 @@
           "refId": "B"
         },
         {
-          "expr": "sum by (instance) (increase(v2ray_traffic_uplink_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range]))",
+          "expr": "sum by (instance) (increase(node_network_transmit_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range]))",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -310,7 +313,10 @@
       "type": "table-old"
     },
     {
-      "aliasColors": {},
+      "aliasColors": {
+        "Interfaces": "semi-dark-red",
+        "Value": "dark-blue"
+      },
       "bars": false,
       "dashLength": 10,
       "dashes": false,
@@ -359,15 +365,15 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(v2ray_traffic_downlink_bytes_total{job=~\"$job\",target=~\"$target\"}[5m]))",
+          "expr": "sum(irate(v2ray_traffic_downlink_bytes_total{job=~\"$job\",dimension=~\"inbound|iptables\"}[5m]))",
           "interval": "",
           "legendFormat": "Downlink",
           "refId": "A"
         },
         {
-          "expr": "sum(irate(v2ray_traffic_uplink_bytes_total{job=~\"$job\",target=~\"$target\"}[5m]))",
+          "expr": "sum by (instance) (irate(node_network_receive_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range]))",
           "interval": "",
-          "legendFormat": "Uplink",
+          "legendFormat": "{{instace}}",
           "refId": "B"
         }
       ],
@@ -481,8 +487,10 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(v2ray_up{job=~\"$job\",instance=~\"$instance\"}) - count(v2ray_up{job=~\"$job\",instance=~\"$instance\"} == 1)",
+          "expr": "count(node_v2ray_up{job=~\"$job\",instance=~\"$instance\"}) - count(node_v2ray_up{job=~\"$job\",instance=~\"$instance\"} == 1)",
           "instant": false,
+          "interval": "",
+          "legendFormat": "",
           "refId": "A"
         }
       ],
@@ -516,141 +524,12 @@
       "scopedVars": {
         "instance": {
           "selected": false,
-          "text": "sh.leishi.io:11260",
-          "value": "sh.leishi.io:11260"
+          "text": "xuzhou.leishi.io:10681",
+          "value": "xuzhou.leishi.io:10681"
         }
       },
       "title": "$instance",
       "type": "row"
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "Prometheus",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "align": null
-          },
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 6,
-        "w": 3,
-        "x": 0,
-        "y": 8
-      },
-      "hiddenSeries": false,
-      "id": 11,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "percentage": false,
-      "pluginVersion": "7.1.5",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "sh.leishi.io:11260",
-          "value": "sh.leishi.io:11260"
-        }
-      },
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "irate(v2ray_traffic_downlink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=\"inbound\",target=\"api\"}[20s])",
-          "interval": "",
-          "legendFormat": "{{target}}",
-          "refId": "A"
-        },
-        {
-          "expr": "irate(v2ray_traffic_uplink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=\"inbound\",target=\"api\"}[20s])",
-          "interval": "",
-          "legendFormat": "",
-          "refId": "C"
-        },
-        {
-          "expr": "irate(v2ray_traffic_uplink_bytes_total{job=~\"$job\",instance=\"$instance\",dimension=\"inbound\",target=\"api\"}[20s])",
-          "hide": true,
-          "interval": "",
-          "legendFormat": "",
-          "refId": "B"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Api status",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
     },
     {
       "columns": [],
@@ -664,8 +543,8 @@
       "fontSize": "90%",
       "gridPos": {
         "h": 6,
-        "w": 9,
-        "x": 3,
+        "w": 12,
+        "x": 0,
         "y": 8
       },
       "id": 18,
@@ -673,14 +552,14 @@
       "scopedVars": {
         "instance": {
           "selected": false,
-          "text": "sh.leishi.io:11260",
-          "value": "sh.leishi.io:11260"
+          "text": "xuzhou.leishi.io:10681",
+          "value": "xuzhou.leishi.io:10681"
         }
       },
       "showHeader": true,
       "sort": {
-        "col": 4,
-        "desc": false
+        "col": 5,
+        "desc": true
       },
       "styles": [
         {
@@ -811,7 +690,7 @@
       ],
       "targets": [
         {
-          "expr": "increase(v2ray_traffic_downlink_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
+          "expr": "increase(node_v2ray_download_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -819,7 +698,188 @@
           "refId": "A"
         },
         {
-          "expr": "increase(v2ray_traffic_uplink_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
+          "expr": "increase(node_v2ray_upload_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "B"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Real-Time Detail Overview - V2ray",
+      "transform": "table",
+      "type": "table-old"
+    },
+    {
+      "columns": [],
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fontSize": "90%",
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "id": 134,
+      "pageSize": null,
+      "scopedVars": {
+        "instance": {
+          "selected": false,
+          "text": "xuzhou.leishi.io:10681",
+          "value": "xuzhou.leishi.io:10681"
+        }
+      },
+      "showHeader": true,
+      "sort": {
+        "col": 5,
+        "desc": true
+      },
+      "styles": [
+        {
+          "alias": "Time",
+          "align": "auto",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "hidden"
+        },
+        {
+          "alias": "Chain",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "chain",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "alias": "Instance",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "instance",
+          "thresholds": [],
+          "type": "hidden",
+          "unit": "short"
+        },
+        {
+          "alias": "Job",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "job",
+          "thresholds": [],
+          "type": "hidden",
+          "unit": "short"
+        },
+        {
+          "alias": "Rule",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "rule",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "alias": "Download",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 3,
+          "mappingType": 1,
+          "pattern": "Value #A",
+          "thresholds": [],
+          "type": "number",
+          "unit": "decbytes"
+        },
+        {
+          "alias": "Upload",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 3,
+          "mappingType": 1,
+          "pattern": "Value #B",
+          "thresholds": [],
+          "type": "number",
+          "unit": "decbytes"
+        },
+        {
+          "alias": "",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "hidden",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "expr": "increase(node_iptables_download_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "A"
+        },
+        {
+          "expr": "increase(node_iptables_upload_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -834,34 +894,36 @@
       "type": "table-old"
     },
     {
-      "aliasColors": {},
+      "aliasColors": {
+        "eth0": "dark-red"
+      },
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": null,
       "fieldConfig": {
         "defaults": {
-          "custom": {},
-          "links": []
+          "custom": {}
         },
         "overrides": []
       },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 6,
+        "h": 7,
         "w": 12,
-        "x": 12,
-        "y": 8
+        "x": 0,
+        "y": 14
       },
       "hiddenSeries": false,
-      "id": 31,
+      "id": 132,
       "legend": {
+        "alignAsTable": false,
         "avg": false,
         "current": false,
         "max": false,
         "min": false,
-        "rightSide": true,
+        "rightSide": false,
         "show": true,
         "total": false,
         "values": false
@@ -877,26 +939,30 @@
       "scopedVars": {
         "instance": {
           "selected": false,
-          "text": "sh.leishi.io:11260",
-          "value": "sh.leishi.io:11260"
+          "text": "xuzhou.leishi.io:10681",
+          "value": "xuzhou.leishi.io:10681"
         }
       },
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "alias": ""
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(v2ray_traffic_downlink_bytes_total{job=~\"$job\",instance=~\"$instance\"}[5m]))",
+          "expr": "irate(node_v2ray_download_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"$dimension\",target=~\"$target\"}[5m])",
           "hide": false,
           "interval": "",
-          "legendFormat": "Downlink",
+          "legendFormat": "{{target}}",
           "refId": "A"
         },
         {
-          "expr": "sum(irate(v2ray_traffic_uplink_bytes_total{job=~\"$job\",instance=~\"$instance\"}[5m]))",
+          "expr": "irate(node_iptables_download_bytes_total{job=~\"$job\",instance=~\"$instance\",chain=~\"$dimension\",rule=~\"$target\"}[5m])",
           "interval": "",
-          "legendFormat": "Uplink",
+          "legendFormat": "{{rule}}",
           "refId": "B"
         }
       ],
@@ -904,7 +970,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "All Bandwidth",
+      "title": "$instance $dimension<->$target download status",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -921,108 +987,7 @@
       "yaxes": [
         {
           "format": "Bps",
-          "label": "",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
           "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": false
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 0,
-        "y": 14
-      },
-      "hiddenSeries": false,
-      "id": 68,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "percentage": false,
-      "pluginVersion": "7.1.5",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "sh.leishi.io:11260",
-          "value": "sh.leishi.io:11260"
-        }
-      },
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "irate(v2ray_traffic_downlink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"inbound\"}[5m])",
-          "interval": "",
-          "legendFormat": "{{target}}",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "$instance inbound download status",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "decimals": null,
-          "format": "Bps",
-          "label": "",
           "logBase": 1,
           "max": null,
           "min": null,
@@ -1043,7 +1008,9 @@
       }
     },
     {
-      "aliasColors": {},
+      "aliasColors": {
+        "eth0": "dark-red"
+      },
       "bars": false,
       "dashLength": 10,
       "dashes": false,
@@ -1063,13 +1030,14 @@
         "y": 14
       },
       "hiddenSeries": false,
-      "id": 89,
+      "id": 141,
       "legend": {
+        "alignAsTable": false,
         "avg": false,
         "current": false,
         "max": false,
         "min": false,
-        "rightSide": true,
+        "rightSide": false,
         "show": true,
         "total": false,
         "values": false
@@ -1085,309 +1053,8 @@
       "scopedVars": {
         "instance": {
           "selected": false,
-          "text": "sh.leishi.io:11260",
-          "value": "sh.leishi.io:11260"
-        }
-      },
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "irate(v2ray_traffic_uplink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"inbound\"}[5m])",
-          "interval": "",
-          "legendFormat": "{{target}}",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "$instance inbound upload status",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "decimals": null,
-          "format": "Bps",
-          "label": "",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 0,
-        "y": 21
-      },
-      "hiddenSeries": false,
-      "id": 74,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "percentage": false,
-      "pluginVersion": "7.1.5",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "sh.leishi.io:11260",
-          "value": "sh.leishi.io:11260"
-        }
-      },
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "irate(v2ray_traffic_downlink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"user\"}[5m])",
-          "interval": "",
-          "legendFormat": "{{target}}",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "$instance user download status",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "Bps",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 12,
-        "y": 21
-      },
-      "hiddenSeries": false,
-      "id": 90,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "percentage": false,
-      "pluginVersion": "7.1.5",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "sh.leishi.io:11260",
-          "value": "sh.leishi.io:11260"
-        }
-      },
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "irate(v2ray_traffic_uplink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"user\"}[5m])",
-          "interval": "",
-          "legendFormat": "{{target}}",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "$instance user upload status",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "Bps",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 0,
-        "y": 28
-      },
-      "hiddenSeries": false,
-      "id": 81,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "percentage": false,
-      "pluginVersion": "7.1.5",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "sh.leishi.io:11260",
-          "value": "sh.leishi.io:11260"
+          "text": "xuzhou.leishi.io:10681",
+          "value": "xuzhou.leishi.io:10681"
         }
       },
       "seriesOverrides": [
@@ -1400,17 +1067,24 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "irate(v2ray_traffic_downlink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"iptables\"}[5m])",
+          "expr": "irate(node_v2ray_upload_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"$dimension\",target=~\"$target\"}[5m])",
+          "hide": false,
           "interval": "",
           "legendFormat": "{{target}}",
           "refId": "A"
+        },
+        {
+          "expr": "irate(node_iptables_upload_bytes_total{job=~\"$job\",instance=~\"$instance\",chain=~\"$dimension\",rule=~\"$target\"}[5m])",
+          "interval": "",
+          "legendFormat": "{{rule}}",
+          "refId": "B"
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "$instance iptables download status",
+      "title": "$instance $dimension<->$target download status",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1448,108 +1122,2512 @@
       }
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
+      "collapsed": true,
+      "datasource": "Prometheus",
       "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 12,
-        "y": 28
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 21
       },
-      "hiddenSeries": false,
-      "id": 91,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "percentage": false,
-      "pluginVersion": "7.1.5",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
+      "id": 142,
+      "panels": [
+        {
+          "columns": [],
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fontSize": "90%",
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 0,
+            "y": 22
+          },
+          "id": 143,
+          "pageSize": null,
+          "repeatIteration": 1600467807135,
+          "repeatPanelId": 18,
+          "repeatedByRow": true,
+          "scopedVars": {
+            "instance": {
+              "selected": false,
+              "text": "sj1.leishi.io:9100",
+              "value": "sj1.leishi.io:9100"
+            }
+          },
+          "showHeader": true,
+          "sort": {
+            "col": 5,
+            "desc": true
+          },
+          "styles": [
+            {
+              "alias": "Time",
+              "align": "auto",
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "pattern": "Time",
+              "type": "hidden"
+            },
+            {
+              "alias": "Dimension",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "dimension",
+              "thresholds": [],
+              "type": "string",
+              "unit": "short"
+            },
+            {
+              "alias": "Instance",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "instance",
+              "thresholds": [],
+              "type": "hidden",
+              "unit": "short"
+            },
+            {
+              "alias": "Job",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "job",
+              "thresholds": [],
+              "type": "hidden",
+              "unit": "short"
+            },
+            {
+              "alias": "Target",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "target",
+              "thresholds": [],
+              "type": "string",
+              "unit": "short"
+            },
+            {
+              "alias": "Downlink",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 3,
+              "mappingType": 1,
+              "pattern": "Value #A",
+              "thresholds": [],
+              "type": "number",
+              "unit": "decbytes"
+            },
+            {
+              "alias": "Uplink",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 3,
+              "mappingType": 1,
+              "pattern": "Value #B",
+              "thresholds": [],
+              "type": "number",
+              "unit": "decbytes"
+            },
+            {
+              "alias": "",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "/.*/",
+              "thresholds": [],
+              "type": "hidden",
+              "unit": "short"
+            }
+          ],
+          "targets": [
+            {
+              "expr": "increase(node_v2ray_download_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
+              "format": "table",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            },
+            {
+              "expr": "increase(node_v2ray_upload_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
+              "format": "table",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "B"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Real-Time Detail Overview - V2ray",
+          "transform": "table",
+          "type": "table-old"
+        },
+        {
+          "columns": [],
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fontSize": "90%",
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 12,
+            "y": 22
+          },
+          "id": 144,
+          "pageSize": null,
+          "repeatIteration": 1600467807135,
+          "repeatPanelId": 134,
+          "repeatedByRow": true,
+          "scopedVars": {
+            "instance": {
+              "selected": false,
+              "text": "sj1.leishi.io:9100",
+              "value": "sj1.leishi.io:9100"
+            }
+          },
+          "showHeader": true,
+          "sort": {
+            "col": 5,
+            "desc": true
+          },
+          "styles": [
+            {
+              "alias": "Time",
+              "align": "auto",
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "pattern": "Time",
+              "type": "hidden"
+            },
+            {
+              "alias": "Chain",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "chain",
+              "thresholds": [],
+              "type": "string",
+              "unit": "short"
+            },
+            {
+              "alias": "Instance",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "instance",
+              "thresholds": [],
+              "type": "hidden",
+              "unit": "short"
+            },
+            {
+              "alias": "Job",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "job",
+              "thresholds": [],
+              "type": "hidden",
+              "unit": "short"
+            },
+            {
+              "alias": "Rule",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "rule",
+              "thresholds": [],
+              "type": "string",
+              "unit": "short"
+            },
+            {
+              "alias": "Download",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 3,
+              "mappingType": 1,
+              "pattern": "Value #A",
+              "thresholds": [],
+              "type": "number",
+              "unit": "decbytes"
+            },
+            {
+              "alias": "Upload",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 3,
+              "mappingType": 1,
+              "pattern": "Value #B",
+              "thresholds": [],
+              "type": "number",
+              "unit": "decbytes"
+            },
+            {
+              "alias": "",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "/.*/",
+              "thresholds": [],
+              "type": "hidden",
+              "unit": "short"
+            }
+          ],
+          "targets": [
+            {
+              "expr": "increase(node_iptables_download_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
+              "format": "table",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            },
+            {
+              "expr": "increase(node_iptables_upload_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
+              "format": "table",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "B"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Real-Time Detail Overview",
+          "transform": "table",
+          "type": "table-old"
+        },
+        {
+          "aliasColors": {
+            "eth0": "dark-red"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 28
+          },
+          "hiddenSeries": false,
+          "id": 145,
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "percentage": false,
+          "pluginVersion": "7.1.5",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "repeatIteration": 1600467807135,
+          "repeatPanelId": 132,
+          "repeatedByRow": true,
+          "scopedVars": {
+            "instance": {
+              "selected": false,
+              "text": "sj1.leishi.io:9100",
+              "value": "sj1.leishi.io:9100"
+            }
+          },
+          "seriesOverrides": [
+            {
+              "alias": ""
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "irate(node_v2ray_download_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"$dimension\",target=~\"$target\"}[5m])",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "{{target}}",
+              "refId": "A"
+            },
+            {
+              "expr": "irate(node_iptables_download_bytes_total{job=~\"$job\",instance=~\"$instance\",chain=~\"$dimension\",rule=~\"$target\"}[5m])",
+              "interval": "",
+              "legendFormat": "{{rule}}",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "$instance $dimension<->$target download status",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "Bps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "eth0": "dark-red"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 28
+          },
+          "hiddenSeries": false,
+          "id": 146,
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "percentage": false,
+          "pluginVersion": "7.1.5",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "repeatIteration": 1600467807135,
+          "repeatPanelId": 141,
+          "repeatedByRow": true,
+          "scopedVars": {
+            "instance": {
+              "selected": false,
+              "text": "sj1.leishi.io:9100",
+              "value": "sj1.leishi.io:9100"
+            }
+          },
+          "seriesOverrides": [
+            {
+              "alias": ""
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "irate(node_v2ray_upload_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"$dimension\",target=~\"$target\"}[5m])",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "{{target}}",
+              "refId": "A"
+            },
+            {
+              "expr": "irate(node_iptables_upload_bytes_total{job=~\"$job\",instance=~\"$instance\",chain=~\"$dimension\",rule=~\"$target\"}[5m])",
+              "interval": "",
+              "legendFormat": "{{rule}}",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "$instance $dimension<->$target download status",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "Bps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "repeat": null,
+      "repeatIteration": 1600467807135,
+      "repeatPanelId": 4,
       "scopedVars": {
         "instance": {
           "selected": false,
-          "text": "sh.leishi.io:11260",
-          "value": "sh.leishi.io:11260"
+          "text": "sj1.leishi.io:9100",
+          "value": "sj1.leishi.io:9100"
         }
       },
-      "seriesOverrides": [
-        {
-          "alias": ""
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "irate(v2ray_traffic_uplink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"iptables\"}[5m])",
-          "interval": "",
-          "legendFormat": "{{target}}",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "$instance iptables upload status",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
+      "title": "$instance",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": "Prometheus",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 22
       },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
+      "id": 147,
+      "panels": [
         {
-          "format": "Bps",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
+          "columns": [],
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fontSize": "90%",
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 0,
+            "y": 23
+          },
+          "id": 148,
+          "pageSize": null,
+          "repeatIteration": 1600467807135,
+          "repeatPanelId": 18,
+          "repeatedByRow": true,
+          "scopedVars": {
+            "instance": {
+              "selected": false,
+              "text": "sj0.leishi.io:9100",
+              "value": "sj0.leishi.io:9100"
+            }
+          },
+          "showHeader": true,
+          "sort": {
+            "col": 5,
+            "desc": true
+          },
+          "styles": [
+            {
+              "alias": "Time",
+              "align": "auto",
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "pattern": "Time",
+              "type": "hidden"
+            },
+            {
+              "alias": "Dimension",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "dimension",
+              "thresholds": [],
+              "type": "string",
+              "unit": "short"
+            },
+            {
+              "alias": "Instance",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "instance",
+              "thresholds": [],
+              "type": "hidden",
+              "unit": "short"
+            },
+            {
+              "alias": "Job",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "job",
+              "thresholds": [],
+              "type": "hidden",
+              "unit": "short"
+            },
+            {
+              "alias": "Target",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "target",
+              "thresholds": [],
+              "type": "string",
+              "unit": "short"
+            },
+            {
+              "alias": "Downlink",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 3,
+              "mappingType": 1,
+              "pattern": "Value #A",
+              "thresholds": [],
+              "type": "number",
+              "unit": "decbytes"
+            },
+            {
+              "alias": "Uplink",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 3,
+              "mappingType": 1,
+              "pattern": "Value #B",
+              "thresholds": [],
+              "type": "number",
+              "unit": "decbytes"
+            },
+            {
+              "alias": "",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "/.*/",
+              "thresholds": [],
+              "type": "hidden",
+              "unit": "short"
+            }
+          ],
+          "targets": [
+            {
+              "expr": "increase(node_v2ray_download_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
+              "format": "table",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            },
+            {
+              "expr": "increase(node_v2ray_upload_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
+              "format": "table",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "B"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Real-Time Detail Overview - V2ray",
+          "transform": "table",
+          "type": "table-old"
         },
         {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
+          "columns": [],
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fontSize": "90%",
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 12,
+            "y": 23
+          },
+          "id": 149,
+          "pageSize": null,
+          "repeatIteration": 1600467807135,
+          "repeatPanelId": 134,
+          "repeatedByRow": true,
+          "scopedVars": {
+            "instance": {
+              "selected": false,
+              "text": "sj0.leishi.io:9100",
+              "value": "sj0.leishi.io:9100"
+            }
+          },
+          "showHeader": true,
+          "sort": {
+            "col": 5,
+            "desc": true
+          },
+          "styles": [
+            {
+              "alias": "Time",
+              "align": "auto",
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "pattern": "Time",
+              "type": "hidden"
+            },
+            {
+              "alias": "Chain",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "chain",
+              "thresholds": [],
+              "type": "string",
+              "unit": "short"
+            },
+            {
+              "alias": "Instance",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "instance",
+              "thresholds": [],
+              "type": "hidden",
+              "unit": "short"
+            },
+            {
+              "alias": "Job",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "job",
+              "thresholds": [],
+              "type": "hidden",
+              "unit": "short"
+            },
+            {
+              "alias": "Rule",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "rule",
+              "thresholds": [],
+              "type": "string",
+              "unit": "short"
+            },
+            {
+              "alias": "Download",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 3,
+              "mappingType": 1,
+              "pattern": "Value #A",
+              "thresholds": [],
+              "type": "number",
+              "unit": "decbytes"
+            },
+            {
+              "alias": "Upload",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 3,
+              "mappingType": 1,
+              "pattern": "Value #B",
+              "thresholds": [],
+              "type": "number",
+              "unit": "decbytes"
+            },
+            {
+              "alias": "",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "/.*/",
+              "thresholds": [],
+              "type": "hidden",
+              "unit": "short"
+            }
+          ],
+          "targets": [
+            {
+              "expr": "increase(node_iptables_download_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
+              "format": "table",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            },
+            {
+              "expr": "increase(node_iptables_upload_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
+              "format": "table",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "B"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Real-Time Detail Overview",
+          "transform": "table",
+          "type": "table-old"
+        },
+        {
+          "aliasColors": {
+            "eth0": "dark-red"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 29
+          },
+          "hiddenSeries": false,
+          "id": 150,
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "percentage": false,
+          "pluginVersion": "7.1.5",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "repeatIteration": 1600467807135,
+          "repeatPanelId": 132,
+          "repeatedByRow": true,
+          "scopedVars": {
+            "instance": {
+              "selected": false,
+              "text": "sj0.leishi.io:9100",
+              "value": "sj0.leishi.io:9100"
+            }
+          },
+          "seriesOverrides": [
+            {
+              "alias": ""
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "irate(node_v2ray_download_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"$dimension\",target=~\"$target\"}[5m])",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "{{target}}",
+              "refId": "A"
+            },
+            {
+              "expr": "irate(node_iptables_download_bytes_total{job=~\"$job\",instance=~\"$instance\",chain=~\"$dimension\",rule=~\"$target\"}[5m])",
+              "interval": "",
+              "legendFormat": "{{rule}}",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "$instance $dimension<->$target download status",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "Bps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "eth0": "dark-red"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 29
+          },
+          "hiddenSeries": false,
+          "id": 151,
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "percentage": false,
+          "pluginVersion": "7.1.5",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "repeatIteration": 1600467807135,
+          "repeatPanelId": 141,
+          "repeatedByRow": true,
+          "scopedVars": {
+            "instance": {
+              "selected": false,
+              "text": "sj0.leishi.io:9100",
+              "value": "sj0.leishi.io:9100"
+            }
+          },
+          "seriesOverrides": [
+            {
+              "alias": ""
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "irate(node_v2ray_upload_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"$dimension\",target=~\"$target\"}[5m])",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "{{target}}",
+              "refId": "A"
+            },
+            {
+              "expr": "irate(node_iptables_upload_bytes_total{job=~\"$job\",instance=~\"$instance\",chain=~\"$dimension\",rule=~\"$target\"}[5m])",
+              "interval": "",
+              "legendFormat": "{{rule}}",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "$instance $dimension<->$target download status",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "Bps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         }
       ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "repeat": null,
+      "repeatIteration": 1600467807135,
+      "repeatPanelId": 4,
+      "scopedVars": {
+        "instance": {
+          "selected": false,
+          "text": "sj0.leishi.io:9100",
+          "value": "sj0.leishi.io:9100"
+        }
+      },
+      "title": "$instance",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": "Prometheus",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 23
+      },
+      "id": 152,
+      "panels": [
+        {
+          "columns": [],
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fontSize": "90%",
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 0,
+            "y": 24
+          },
+          "id": 153,
+          "pageSize": null,
+          "repeatIteration": 1600467807135,
+          "repeatPanelId": 18,
+          "repeatedByRow": true,
+          "scopedVars": {
+            "instance": {
+              "selected": false,
+              "text": "la2.leishi.io:9100",
+              "value": "la2.leishi.io:9100"
+            }
+          },
+          "showHeader": true,
+          "sort": {
+            "col": 5,
+            "desc": true
+          },
+          "styles": [
+            {
+              "alias": "Time",
+              "align": "auto",
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "pattern": "Time",
+              "type": "hidden"
+            },
+            {
+              "alias": "Dimension",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "dimension",
+              "thresholds": [],
+              "type": "string",
+              "unit": "short"
+            },
+            {
+              "alias": "Instance",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "instance",
+              "thresholds": [],
+              "type": "hidden",
+              "unit": "short"
+            },
+            {
+              "alias": "Job",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "job",
+              "thresholds": [],
+              "type": "hidden",
+              "unit": "short"
+            },
+            {
+              "alias": "Target",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "target",
+              "thresholds": [],
+              "type": "string",
+              "unit": "short"
+            },
+            {
+              "alias": "Downlink",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 3,
+              "mappingType": 1,
+              "pattern": "Value #A",
+              "thresholds": [],
+              "type": "number",
+              "unit": "decbytes"
+            },
+            {
+              "alias": "Uplink",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 3,
+              "mappingType": 1,
+              "pattern": "Value #B",
+              "thresholds": [],
+              "type": "number",
+              "unit": "decbytes"
+            },
+            {
+              "alias": "",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "/.*/",
+              "thresholds": [],
+              "type": "hidden",
+              "unit": "short"
+            }
+          ],
+          "targets": [
+            {
+              "expr": "increase(node_v2ray_download_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
+              "format": "table",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            },
+            {
+              "expr": "increase(node_v2ray_upload_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
+              "format": "table",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "B"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Real-Time Detail Overview - V2ray",
+          "transform": "table",
+          "type": "table-old"
+        },
+        {
+          "columns": [],
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fontSize": "90%",
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 12,
+            "y": 24
+          },
+          "id": 154,
+          "pageSize": null,
+          "repeatIteration": 1600467807135,
+          "repeatPanelId": 134,
+          "repeatedByRow": true,
+          "scopedVars": {
+            "instance": {
+              "selected": false,
+              "text": "la2.leishi.io:9100",
+              "value": "la2.leishi.io:9100"
+            }
+          },
+          "showHeader": true,
+          "sort": {
+            "col": 5,
+            "desc": true
+          },
+          "styles": [
+            {
+              "alias": "Time",
+              "align": "auto",
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "pattern": "Time",
+              "type": "hidden"
+            },
+            {
+              "alias": "Chain",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "chain",
+              "thresholds": [],
+              "type": "string",
+              "unit": "short"
+            },
+            {
+              "alias": "Instance",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "instance",
+              "thresholds": [],
+              "type": "hidden",
+              "unit": "short"
+            },
+            {
+              "alias": "Job",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "job",
+              "thresholds": [],
+              "type": "hidden",
+              "unit": "short"
+            },
+            {
+              "alias": "Rule",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "rule",
+              "thresholds": [],
+              "type": "string",
+              "unit": "short"
+            },
+            {
+              "alias": "Download",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 3,
+              "mappingType": 1,
+              "pattern": "Value #A",
+              "thresholds": [],
+              "type": "number",
+              "unit": "decbytes"
+            },
+            {
+              "alias": "Upload",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 3,
+              "mappingType": 1,
+              "pattern": "Value #B",
+              "thresholds": [],
+              "type": "number",
+              "unit": "decbytes"
+            },
+            {
+              "alias": "",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "/.*/",
+              "thresholds": [],
+              "type": "hidden",
+              "unit": "short"
+            }
+          ],
+          "targets": [
+            {
+              "expr": "increase(node_iptables_download_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
+              "format": "table",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            },
+            {
+              "expr": "increase(node_iptables_upload_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
+              "format": "table",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "B"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Real-Time Detail Overview",
+          "transform": "table",
+          "type": "table-old"
+        },
+        {
+          "aliasColors": {
+            "eth0": "dark-red"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 30
+          },
+          "hiddenSeries": false,
+          "id": 155,
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "percentage": false,
+          "pluginVersion": "7.1.5",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "repeatIteration": 1600467807135,
+          "repeatPanelId": 132,
+          "repeatedByRow": true,
+          "scopedVars": {
+            "instance": {
+              "selected": false,
+              "text": "la2.leishi.io:9100",
+              "value": "la2.leishi.io:9100"
+            }
+          },
+          "seriesOverrides": [
+            {
+              "alias": ""
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "irate(node_v2ray_download_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"$dimension\",target=~\"$target\"}[5m])",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "{{target}}",
+              "refId": "A"
+            },
+            {
+              "expr": "irate(node_iptables_download_bytes_total{job=~\"$job\",instance=~\"$instance\",chain=~\"$dimension\",rule=~\"$target\"}[5m])",
+              "interval": "",
+              "legendFormat": "{{rule}}",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "$instance $dimension<->$target download status",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "Bps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "eth0": "dark-red"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 30
+          },
+          "hiddenSeries": false,
+          "id": 156,
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "percentage": false,
+          "pluginVersion": "7.1.5",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "repeatIteration": 1600467807135,
+          "repeatPanelId": 141,
+          "repeatedByRow": true,
+          "scopedVars": {
+            "instance": {
+              "selected": false,
+              "text": "la2.leishi.io:9100",
+              "value": "la2.leishi.io:9100"
+            }
+          },
+          "seriesOverrides": [
+            {
+              "alias": ""
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "irate(node_v2ray_upload_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"$dimension\",target=~\"$target\"}[5m])",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "{{target}}",
+              "refId": "A"
+            },
+            {
+              "expr": "irate(node_iptables_upload_bytes_total{job=~\"$job\",instance=~\"$instance\",chain=~\"$dimension\",rule=~\"$target\"}[5m])",
+              "interval": "",
+              "legendFormat": "{{rule}}",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "$instance $dimension<->$target download status",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "Bps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "repeat": null,
+      "repeatIteration": 1600467807135,
+      "repeatPanelId": 4,
+      "scopedVars": {
+        "instance": {
+          "selected": false,
+          "text": "la2.leishi.io:9100",
+          "value": "la2.leishi.io:9100"
+        }
+      },
+      "title": "$instance",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": "Prometheus",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "id": 157,
+      "panels": [
+        {
+          "columns": [],
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fontSize": "90%",
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 0,
+            "y": 25
+          },
+          "id": 158,
+          "pageSize": null,
+          "repeatIteration": 1600467807135,
+          "repeatPanelId": 18,
+          "repeatedByRow": true,
+          "scopedVars": {
+            "instance": {
+              "selected": false,
+              "text": "la0.leishi.io:9100",
+              "value": "la0.leishi.io:9100"
+            }
+          },
+          "showHeader": true,
+          "sort": {
+            "col": 5,
+            "desc": true
+          },
+          "styles": [
+            {
+              "alias": "Time",
+              "align": "auto",
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "pattern": "Time",
+              "type": "hidden"
+            },
+            {
+              "alias": "Dimension",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "dimension",
+              "thresholds": [],
+              "type": "string",
+              "unit": "short"
+            },
+            {
+              "alias": "Instance",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "instance",
+              "thresholds": [],
+              "type": "hidden",
+              "unit": "short"
+            },
+            {
+              "alias": "Job",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "job",
+              "thresholds": [],
+              "type": "hidden",
+              "unit": "short"
+            },
+            {
+              "alias": "Target",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "target",
+              "thresholds": [],
+              "type": "string",
+              "unit": "short"
+            },
+            {
+              "alias": "Downlink",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 3,
+              "mappingType": 1,
+              "pattern": "Value #A",
+              "thresholds": [],
+              "type": "number",
+              "unit": "decbytes"
+            },
+            {
+              "alias": "Uplink",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 3,
+              "mappingType": 1,
+              "pattern": "Value #B",
+              "thresholds": [],
+              "type": "number",
+              "unit": "decbytes"
+            },
+            {
+              "alias": "",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "/.*/",
+              "thresholds": [],
+              "type": "hidden",
+              "unit": "short"
+            }
+          ],
+          "targets": [
+            {
+              "expr": "increase(node_v2ray_download_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
+              "format": "table",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            },
+            {
+              "expr": "increase(node_v2ray_upload_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
+              "format": "table",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "B"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Real-Time Detail Overview - V2ray",
+          "transform": "table",
+          "type": "table-old"
+        },
+        {
+          "columns": [],
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fontSize": "90%",
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 12,
+            "y": 25
+          },
+          "id": 159,
+          "pageSize": null,
+          "repeatIteration": 1600467807135,
+          "repeatPanelId": 134,
+          "repeatedByRow": true,
+          "scopedVars": {
+            "instance": {
+              "selected": false,
+              "text": "la0.leishi.io:9100",
+              "value": "la0.leishi.io:9100"
+            }
+          },
+          "showHeader": true,
+          "sort": {
+            "col": 5,
+            "desc": true
+          },
+          "styles": [
+            {
+              "alias": "Time",
+              "align": "auto",
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "pattern": "Time",
+              "type": "hidden"
+            },
+            {
+              "alias": "Chain",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "chain",
+              "thresholds": [],
+              "type": "string",
+              "unit": "short"
+            },
+            {
+              "alias": "Instance",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "instance",
+              "thresholds": [],
+              "type": "hidden",
+              "unit": "short"
+            },
+            {
+              "alias": "Job",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "job",
+              "thresholds": [],
+              "type": "hidden",
+              "unit": "short"
+            },
+            {
+              "alias": "Rule",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "rule",
+              "thresholds": [],
+              "type": "string",
+              "unit": "short"
+            },
+            {
+              "alias": "Download",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 3,
+              "mappingType": 1,
+              "pattern": "Value #A",
+              "thresholds": [],
+              "type": "number",
+              "unit": "decbytes"
+            },
+            {
+              "alias": "Upload",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 3,
+              "mappingType": 1,
+              "pattern": "Value #B",
+              "thresholds": [],
+              "type": "number",
+              "unit": "decbytes"
+            },
+            {
+              "alias": "",
+              "align": "auto",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "mappingType": 1,
+              "pattern": "/.*/",
+              "thresholds": [],
+              "type": "hidden",
+              "unit": "short"
+            }
+          ],
+          "targets": [
+            {
+              "expr": "increase(node_iptables_download_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
+              "format": "table",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            },
+            {
+              "expr": "increase(node_iptables_upload_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
+              "format": "table",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "B"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Real-Time Detail Overview",
+          "transform": "table",
+          "type": "table-old"
+        },
+        {
+          "aliasColors": {
+            "eth0": "dark-red"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 31
+          },
+          "hiddenSeries": false,
+          "id": 160,
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "percentage": false,
+          "pluginVersion": "7.1.5",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "repeatIteration": 1600467807135,
+          "repeatPanelId": 132,
+          "repeatedByRow": true,
+          "scopedVars": {
+            "instance": {
+              "selected": false,
+              "text": "la0.leishi.io:9100",
+              "value": "la0.leishi.io:9100"
+            }
+          },
+          "seriesOverrides": [
+            {
+              "alias": ""
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "irate(node_v2ray_download_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"$dimension\",target=~\"$target\"}[5m])",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "{{target}}",
+              "refId": "A"
+            },
+            {
+              "expr": "irate(node_iptables_download_bytes_total{job=~\"$job\",instance=~\"$instance\",chain=~\"$dimension\",rule=~\"$target\"}[5m])",
+              "interval": "",
+              "legendFormat": "{{rule}}",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "$instance $dimension<->$target download status",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "Bps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "eth0": "dark-red"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 31
+          },
+          "hiddenSeries": false,
+          "id": 161,
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "percentage": false,
+          "pluginVersion": "7.1.5",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "repeatIteration": 1600467807135,
+          "repeatPanelId": 141,
+          "repeatedByRow": true,
+          "scopedVars": {
+            "instance": {
+              "selected": false,
+              "text": "la0.leishi.io:9100",
+              "value": "la0.leishi.io:9100"
+            }
+          },
+          "seriesOverrides": [
+            {
+              "alias": ""
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "irate(node_v2ray_upload_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"$dimension\",target=~\"$target\"}[5m])",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "{{target}}",
+              "refId": "A"
+            },
+            {
+              "expr": "irate(node_iptables_upload_bytes_total{job=~\"$job\",instance=~\"$instance\",chain=~\"$dimension\",rule=~\"$target\"}[5m])",
+              "interval": "",
+              "legendFormat": "{{rule}}",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "$instance $dimension<->$target download status",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "Bps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "repeat": null,
+      "repeatIteration": 1600467807135,
+      "repeatPanelId": 4,
+      "scopedVars": {
+        "instance": {
+          "selected": false,
+          "text": "la0.leishi.io:9100",
+          "value": "la0.leishi.io:9100"
+        }
+      },
+      "title": "$instance",
+      "type": "row"
     },
     {
       "collapsed": false,
@@ -1558,154 +3636,22 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 35
+        "y": 25
       },
-      "id": 92,
+      "id": 162,
       "panels": [],
       "repeat": null,
-      "repeatIteration": 1599635635675,
+      "repeatIteration": 1600467807135,
       "repeatPanelId": 4,
       "scopedVars": {
         "instance": {
           "selected": false,
-          "text": "xuzhou.leishi.io:10681",
-          "value": "xuzhou.leishi.io:10681"
+          "text": "idc.cubepaas.com:21857",
+          "value": "idc.cubepaas.com:21857"
         }
       },
       "title": "$instance",
       "type": "row"
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "Prometheus",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "align": null
-          },
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 6,
-        "w": 3,
-        "x": 0,
-        "y": 36
-      },
-      "hiddenSeries": false,
-      "id": 93,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "percentage": false,
-      "pluginVersion": "7.1.5",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "repeatIteration": 1599635635675,
-      "repeatPanelId": 11,
-      "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "xuzhou.leishi.io:10681",
-          "value": "xuzhou.leishi.io:10681"
-        }
-      },
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "irate(v2ray_traffic_downlink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=\"inbound\",target=\"api\"}[20s])",
-          "interval": "",
-          "legendFormat": "{{target}}",
-          "refId": "A"
-        },
-        {
-          "expr": "irate(v2ray_traffic_uplink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=\"inbound\",target=\"api\"}[20s])",
-          "interval": "",
-          "legendFormat": "",
-          "refId": "C"
-        },
-        {
-          "expr": "irate(v2ray_traffic_uplink_bytes_total{job=~\"$job\",instance=\"$instance\",dimension=\"inbound\",target=\"api\"}[20s])",
-          "hide": true,
-          "interval": "",
-          "legendFormat": "",
-          "refId": "B"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Api status",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
     },
     {
       "columns": [],
@@ -1719,26 +3665,26 @@
       "fontSize": "90%",
       "gridPos": {
         "h": 6,
-        "w": 9,
-        "x": 3,
-        "y": 36
+        "w": 12,
+        "x": 0,
+        "y": 26
       },
-      "id": 94,
+      "id": 163,
       "pageSize": null,
-      "repeatIteration": 1599635635675,
+      "repeatIteration": 1600467807135,
       "repeatPanelId": 18,
       "repeatedByRow": true,
       "scopedVars": {
         "instance": {
           "selected": false,
-          "text": "xuzhou.leishi.io:10681",
-          "value": "xuzhou.leishi.io:10681"
+          "text": "idc.cubepaas.com:21857",
+          "value": "idc.cubepaas.com:21857"
         }
       },
       "showHeader": true,
       "sort": {
-        "col": 4,
-        "desc": false
+        "col": 5,
+        "desc": true
       },
       "styles": [
         {
@@ -1869,7 +3815,7 @@
       ],
       "targets": [
         {
-          "expr": "increase(v2ray_traffic_downlink_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
+          "expr": "increase(node_v2ray_download_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -1877,7 +3823,191 @@
           "refId": "A"
         },
         {
-          "expr": "increase(v2ray_traffic_uplink_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
+          "expr": "increase(node_v2ray_upload_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "B"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Real-Time Detail Overview - V2ray",
+      "transform": "table",
+      "type": "table-old"
+    },
+    {
+      "columns": [],
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fontSize": "90%",
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 26
+      },
+      "id": 164,
+      "pageSize": null,
+      "repeatIteration": 1600467807135,
+      "repeatPanelId": 134,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "instance": {
+          "selected": false,
+          "text": "idc.cubepaas.com:21857",
+          "value": "idc.cubepaas.com:21857"
+        }
+      },
+      "showHeader": true,
+      "sort": {
+        "col": 5,
+        "desc": true
+      },
+      "styles": [
+        {
+          "alias": "Time",
+          "align": "auto",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "hidden"
+        },
+        {
+          "alias": "Chain",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "chain",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "alias": "Instance",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "instance",
+          "thresholds": [],
+          "type": "hidden",
+          "unit": "short"
+        },
+        {
+          "alias": "Job",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "job",
+          "thresholds": [],
+          "type": "hidden",
+          "unit": "short"
+        },
+        {
+          "alias": "Rule",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "rule",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "alias": "Download",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 3,
+          "mappingType": 1,
+          "pattern": "Value #A",
+          "thresholds": [],
+          "type": "number",
+          "unit": "decbytes"
+        },
+        {
+          "alias": "Upload",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 3,
+          "mappingType": 1,
+          "pattern": "Value #B",
+          "thresholds": [],
+          "type": "number",
+          "unit": "decbytes"
+        },
+        {
+          "alias": "",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "hidden",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "expr": "increase(node_iptables_download_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "A"
+        },
+        {
+          "expr": "increase(node_iptables_upload_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range])",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -1892,34 +4022,36 @@
       "type": "table-old"
     },
     {
-      "aliasColors": {},
+      "aliasColors": {
+        "eth0": "dark-red"
+      },
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": null,
       "fieldConfig": {
         "defaults": {
-          "custom": {},
-          "links": []
+          "custom": {}
         },
         "overrides": []
       },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 6,
+        "h": 7,
         "w": 12,
-        "x": 12,
-        "y": 36
+        "x": 0,
+        "y": 32
       },
       "hiddenSeries": false,
-      "id": 95,
+      "id": 165,
       "legend": {
+        "alignAsTable": false,
         "avg": false,
         "current": false,
         "max": false,
         "min": false,
-        "rightSide": true,
+        "rightSide": false,
         "show": true,
         "total": false,
         "values": false
@@ -1932,32 +4064,36 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "repeatIteration": 1599635635675,
-      "repeatPanelId": 31,
+      "repeatIteration": 1600467807135,
+      "repeatPanelId": 132,
       "repeatedByRow": true,
       "scopedVars": {
         "instance": {
           "selected": false,
-          "text": "xuzhou.leishi.io:10681",
-          "value": "xuzhou.leishi.io:10681"
+          "text": "idc.cubepaas.com:21857",
+          "value": "idc.cubepaas.com:21857"
         }
       },
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "alias": ""
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(v2ray_traffic_downlink_bytes_total{job=~\"$job\",instance=~\"$instance\"}[5m]))",
+          "expr": "irate(node_v2ray_download_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"$dimension\",target=~\"$target\"}[5m])",
           "hide": false,
           "interval": "",
-          "legendFormat": "Downlink",
+          "legendFormat": "{{target}}",
           "refId": "A"
         },
         {
-          "expr": "sum(irate(v2ray_traffic_uplink_bytes_total{job=~\"$job\",instance=~\"$instance\"}[5m]))",
+          "expr": "irate(node_iptables_download_bytes_total{job=~\"$job\",instance=~\"$instance\",chain=~\"$dimension\",rule=~\"$target\"}[5m])",
           "interval": "",
-          "legendFormat": "Uplink",
+          "legendFormat": "{{rule}}",
           "refId": "B"
         }
       ],
@@ -1965,7 +4101,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "All Bandwidth",
+      "title": "$instance $dimension<->$target download status",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1982,111 +4118,7 @@
       "yaxes": [
         {
           "format": "Bps",
-          "label": "",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
           "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": false
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 0,
-        "y": 42
-      },
-      "hiddenSeries": false,
-      "id": 96,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "percentage": false,
-      "pluginVersion": "7.1.5",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "repeatIteration": 1599635635675,
-      "repeatPanelId": 68,
-      "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "xuzhou.leishi.io:10681",
-          "value": "xuzhou.leishi.io:10681"
-        }
-      },
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "irate(v2ray_traffic_downlink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"inbound\"}[5m])",
-          "interval": "",
-          "legendFormat": "{{target}}",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "$instance inbound download status",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "decimals": null,
-          "format": "Bps",
-          "label": "",
           "logBase": 1,
           "max": null,
           "min": null,
@@ -2107,7 +4139,9 @@
       }
     },
     {
-      "aliasColors": {},
+      "aliasColors": {
+        "eth0": "dark-red"
+      },
       "bars": false,
       "dashLength": 10,
       "dashes": false,
@@ -2124,16 +4158,17 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 42
+        "y": 32
       },
       "hiddenSeries": false,
-      "id": 97,
+      "id": 166,
       "legend": {
+        "alignAsTable": false,
         "avg": false,
         "current": false,
         "max": false,
         "min": false,
-        "rightSide": true,
+        "rightSide": false,
         "show": true,
         "total": false,
         "values": false
@@ -2146,324 +4181,14 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "repeatIteration": 1599635635675,
-      "repeatPanelId": 89,
+      "repeatIteration": 1600467807135,
+      "repeatPanelId": 141,
       "repeatedByRow": true,
       "scopedVars": {
         "instance": {
           "selected": false,
-          "text": "xuzhou.leishi.io:10681",
-          "value": "xuzhou.leishi.io:10681"
-        }
-      },
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "irate(v2ray_traffic_uplink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"inbound\"}[5m])",
-          "interval": "",
-          "legendFormat": "{{target}}",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "$instance inbound upload status",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "decimals": null,
-          "format": "Bps",
-          "label": "",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 0,
-        "y": 49
-      },
-      "hiddenSeries": false,
-      "id": 98,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "percentage": false,
-      "pluginVersion": "7.1.5",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "repeatIteration": 1599635635675,
-      "repeatPanelId": 74,
-      "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "xuzhou.leishi.io:10681",
-          "value": "xuzhou.leishi.io:10681"
-        }
-      },
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "irate(v2ray_traffic_downlink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"user\"}[5m])",
-          "interval": "",
-          "legendFormat": "{{target}}",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "$instance user download status",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "Bps",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 12,
-        "y": 49
-      },
-      "hiddenSeries": false,
-      "id": 99,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "percentage": false,
-      "pluginVersion": "7.1.5",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "repeatIteration": 1599635635675,
-      "repeatPanelId": 90,
-      "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "xuzhou.leishi.io:10681",
-          "value": "xuzhou.leishi.io:10681"
-        }
-      },
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "irate(v2ray_traffic_uplink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"user\"}[5m])",
-          "interval": "",
-          "legendFormat": "{{target}}",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "$instance user upload status",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "Bps",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 0,
-        "y": 56
-      },
-      "hiddenSeries": false,
-      "id": 100,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "percentage": false,
-      "pluginVersion": "7.1.5",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "repeatIteration": 1599635635675,
-      "repeatPanelId": 81,
-      "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "xuzhou.leishi.io:10681",
-          "value": "xuzhou.leishi.io:10681"
+          "text": "idc.cubepaas.com:21857",
+          "value": "idc.cubepaas.com:21857"
         }
       },
       "seriesOverrides": [
@@ -2476,124 +4201,24 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "irate(v2ray_traffic_downlink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"iptables\"}[5m])",
+          "expr": "irate(node_v2ray_upload_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"$dimension\",target=~\"$target\"}[5m])",
+          "hide": false,
           "interval": "",
           "legendFormat": "{{target}}",
           "refId": "A"
+        },
+        {
+          "expr": "irate(node_iptables_upload_bytes_total{job=~\"$job\",instance=~\"$instance\",chain=~\"$dimension\",rule=~\"$target\"}[5m])",
+          "interval": "",
+          "legendFormat": "{{rule}}",
+          "refId": "B"
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "$instance iptables download status",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "Bps",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 12,
-        "y": 56
-      },
-      "hiddenSeries": false,
-      "id": 101,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "percentage": false,
-      "pluginVersion": "7.1.5",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "repeatIteration": 1599635635675,
-      "repeatPanelId": 91,
-      "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "xuzhou.leishi.io:10681",
-          "value": "xuzhou.leishi.io:10681"
-        }
-      },
-      "seriesOverrides": [
-        {
-          "alias": ""
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "irate(v2ray_traffic_uplink_bytes_total{job=~\"$job\",instance=~\"$instance\",dimension=~\"iptables\"}[5m])",
-          "interval": "",
-          "legendFormat": "{{target}}",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "$instance iptables upload status",
+      "title": "$instance $dimension<->$target download status",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -2631,44 +4256,14 @@
       }
     }
   ],
-  "refresh": "10s",
+  "refresh": "30s",
   "schemaVersion": 26,
   "style": "dark",
   "tags": [],
   "templating": {
     "list": [
       {
-        "allValue": null,
-        "current": {
-          "selected": true,
-          "text": [
-            "v2ray"
-          ],
-          "value": [
-            "v2ray"
-          ]
-        },
-        "datasource": "Prometheus",
-        "definition": "query_result(count_over_time(v2ray_traffic_downlink_bytes_total[$__range]))",
-        "hide": 0,
-        "includeAll": true,
-        "label": "Job",
-        "multi": true,
-        "name": "job",
-        "options": [],
-        "query": "query_result(count_over_time(v2ray_traffic_downlink_bytes_total[$__range]))",
-        "refresh": 2,
-        "regex": "/job=\"(.*?)\"/",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
-      },
-      {
-        "allValue": null,
+        "allValue": "",
         "current": {
           "selected": true,
           "text": [
@@ -2679,16 +4274,16 @@
           ]
         },
         "datasource": "Prometheus",
-        "definition": "query_result(count_over_time(v2ray_traffic_downlink_bytes_total{job=\"$job\"}[$__range]))",
+        "definition": "query_result(node_v2ray_up)",
         "hide": 0,
         "includeAll": true,
-        "label": "Instance",
+        "label": "Job",
         "multi": true,
-        "name": "instance",
+        "name": "job",
         "options": [],
-        "query": "query_result(count_over_time(v2ray_traffic_downlink_bytes_total{job=\"$job\"}[$__range]))",
+        "query": "query_result(node_v2ray_up)",
         "refresh": 2,
-        "regex": "/instance=\"(.*?)\"/",
+        "regex": "/job=\"(.*?)\"/",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
@@ -2709,16 +4304,183 @@
           ]
         },
         "datasource": "Prometheus",
-        "definition": "query_result(count_over_time(v2ray_traffic_downlink_bytes_total{job=\"$job\"}[$__range]))",
+        "definition": "query_result(node_v2ray_up)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Instance",
+        "multi": true,
+        "name": "instance",
+        "options": [],
+        "query": "query_result(node_v2ray_up)",
+        "refresh": 2,
+        "regex": "/instance=\"(.*?)\"/",
+        "skipUrlSync": false,
+        "sort": 2,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": ".*?",
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": "Prometheus",
+        "definition": "query_result(count_over_time(node_v2ray_download_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range]) or count_over_time(node_iptables_download_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range]))",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Dimension",
+        "multi": true,
+        "name": "dimension",
+        "options": [
+          {
+            "selected": true,
+            "text": "All",
+            "value": "$__all"
+          },
+          {
+            "selected": false,
+            "text": "inbound",
+            "value": "inbound"
+          },
+          {
+            "selected": false,
+            "text": "user",
+            "value": "user"
+          },
+          {
+            "selected": false,
+            "text": "FORWARD",
+            "value": "FORWARD"
+          },
+          {
+            "selected": false,
+            "text": "INPUT",
+            "value": "INPUT"
+          }
+        ],
+        "query": "query_result(count_over_time(node_v2ray_download_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range]) or count_over_time(node_iptables_download_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range]))",
+        "refresh": 0,
+        "regex": "/(?:dimension|chain)=\"(.*?)\"/",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": ".*?",
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": "Prometheus",
+        "definition": "query_result(count_over_time(node_v2ray_download_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range]) or count_over_time(node_iptables_download_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range]))",
         "hide": 0,
         "includeAll": true,
         "label": "Target",
         "multi": true,
         "name": "target",
-        "options": [],
-        "query": "query_result(count_over_time(v2ray_traffic_downlink_bytes_total{job=\"$job\"}[$__range]))",
-        "refresh": 2,
-        "regex": "/target=\"(.*?)\"/",
+        "options": [
+          {
+            "selected": true,
+            "text": "All",
+            "value": "$__all"
+          },
+          {
+            "selected": false,
+            "text": "10001-vmess",
+            "value": "10001-vmess"
+          },
+          {
+            "selected": false,
+            "text": "8080-http",
+            "value": "8080-http"
+          },
+          {
+            "selected": false,
+            "text": "api",
+            "value": "api"
+          },
+          {
+            "selected": false,
+            "text": "10673",
+            "value": "10673"
+          },
+          {
+            "selected": false,
+            "text": "51564",
+            "value": "51564"
+          },
+          {
+            "selected": false,
+            "text": "me@leishi.io",
+            "value": "me@leishi.io"
+          },
+          {
+            "selected": false,
+            "text": "andy_goo@leishi.io",
+            "value": "andy_goo@leishi.io"
+          },
+          {
+            "selected": false,
+            "text": "px@leishi.io",
+            "value": "px@leishi.io"
+          },
+          {
+            "selected": false,
+            "text": "test@leishi.io",
+            "value": "test@leishi.io"
+          },
+          {
+            "selected": false,
+            "text": "10672->122.192.189.40:10672",
+            "value": "10672->122.192.189.40:10672"
+          },
+          {
+            "selected": false,
+            "text": "11261->58.32.13.206:11261",
+            "value": "11261->58.32.13.206:11261"
+          },
+          {
+            "selected": false,
+            "text": "48706->111.6.78.249:48706",
+            "value": "48706->111.6.78.249:48706"
+          },
+          {
+            "selected": false,
+            "text": "10679->13.231.226.67:23333",
+            "value": "10679->13.231.226.67:23333"
+          },
+          {
+            "selected": false,
+            "text": "10680->13.231.226.67:23334",
+            "value": "10680->13.231.226.67:23334"
+          },
+          {
+            "selected": false,
+            "text": "10003->193.160.32.136:443",
+            "value": "10003->193.160.32.136:443"
+          }
+        ],
+        "query": "query_result(count_over_time(node_v2ray_download_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range]) or count_over_time(node_iptables_download_bytes_total{job=~\"$job\",instance=~\"$instance\"}[$__range]))",
+        "refresh": 0,
+        "regex": "/(?:target|rule)=\"(.*?)\"/",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
@@ -2749,5 +4511,5 @@
   "timezone": "",
   "title": "Net Traffic Dashboard",
   "uid": "CCSvIIEZzz",
-  "version": 6
+  "version": 37
 }
